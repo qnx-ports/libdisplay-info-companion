@@ -1,0 +1,30 @@
+diff --git a/di-edid-decode/edid.c b/di-edid-decode/edid.c
+index 19e7f4b..7105cac 100644
+--- a/di-edid-decode/edid.c
++++ b/di-edid-decode/edid.c
+@@ -4,6 +4,10 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
++#ifdef __QNX__
++#include <sys/memstream.h>
++#endif
++
+ #include <libdisplay-info/dmt.h>
+ #include <libdisplay-info/edid.h>
+ #include <libdisplay-info/gtf.h>
+diff --git a/include/memory-stream.h b/include/memory-stream.h
+index 21dc03a..ed732e9 100644
+--- a/include/memory-stream.h
++++ b/include/memory-stream.h
+@@ -9,6 +9,10 @@
+ #include <stddef.h>
+ #include <stdbool.h>
+ 
++#ifdef __QNX__
++#include <sys/memstream.h>
++#endif
++
+ struct memory_stream {
+ 	FILE *fp;
+ 	char *str;

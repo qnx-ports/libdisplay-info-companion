@@ -1,0 +1,64 @@
+pkgname=libdisplay-info
+pkgver=0.3.0
+pkgrel=0
+pkgdesc="EDID and DisplayID library"
+url="https://gitlab.freedesktop.org/emersion/libdisplay-info"
+arch="all"
+license="MIT"
+depends="
+    qnx-memstream
+"
+makedepends="
+    qnx-memstream-dev
+    hwdata-dev
+    meson
+    python
+    pkgconf
+    pkgconf-dev
+    ninja
+    "
+subpackages="$pkgname-dev $pkgname-tools"
+source="https://gitlab.freedesktop.org/emersion/libdisplay-info/-/archive/$pkgver/libdisplay-info-$pkgver.tar.gz
+        add-qnx-memstream-header.patch
+        "
+options="!check" # edid-decode
+
+build() {
+    _extra_flags=""
+    if [[ $CBUILD = $CHOST ]]; then
+        # Compile natively
+        _extra_flags="-Dc_args=-D_QNX_SOURCE -Dc_link_args=-Wl,-lmemstream,-lm"
+    else
+        # Cross compiling
+        # We use meson for its better cross compile capabilities
+        BUILD_ROOT=$CBUILDROOT $CBUILDROOT/$PREFIX/bin/gen-meson-cross
+        _extra_flags="--cross-file=meson.cross"
+    fi
+
+    meson \
+        setup build \
+        -Db_lto=false \
+        -Dprefix=/usr \
+        $_extra_flags
+
+    ninja -C build
+}
+
+check() {
+    meson test --print-errorlogs -C build
+}
+
+package() {
+    DESTDIR="$pkgdir" meson install --no-rebuild -C build
+}
+
+tools() {
+    pkgdesc="$pkgdesc (tools)"
+    depends="$pkgname"
+    amove usr/bin
+}
+
+sha512sums="
+fa023df810d9354135c3a8576233b1a4bab29d943e9ec61ba30cfe512001e4aa56ffc10e1af42ec4d1caa5c10d8e34e3bdbe51d1858d3db580b03a3fa266ee66  libdisplay-info-0.3.0.tar.gz
+47c88026f045d9ca9326ef755286fe03a4fb87404721f5c90f02d7a9393e052f5ce07e32aa17565b70dc32cf9cc7e877df81523585c5022145724aa37e9a6ea9  add-qnx-memstream-header.patch
+"
