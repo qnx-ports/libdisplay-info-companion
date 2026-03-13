@@ -1,6 +1,6 @@
 pkgname=libdisplay-info
 pkgver=0.3.0
-pkgrel=0
+pkgrel=${pkgrel:-0}
 pkgdesc="EDID and DisplayID library"
 url="https://gitlab.freedesktop.org/emersion/libdisplay-info"
 arch="all"
@@ -58,6 +58,7 @@ tools() {
     amove usr/bin
 }
 
+options="$options ${DISABLE_CHECK:+!check}"
 sha512sums="
 fa023df810d9354135c3a8576233b1a4bab29d943e9ec61ba30cfe512001e4aa56ffc10e1af42ec4d1caa5c10d8e34e3bdbe51d1858d3db580b03a3fa266ee66  libdisplay-info-0.3.0.tar.gz
 47c88026f045d9ca9326ef755286fe03a4fb87404721f5c90f02d7a9393e052f5ce07e32aa17565b70dc32cf9cc7e877df81523585c5022145724aa37e9a6ea9  add-qnx-memstream-header.patch
